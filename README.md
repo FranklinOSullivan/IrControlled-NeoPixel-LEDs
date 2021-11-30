@@ -1,3 +1,2 @@
 # IrControlled-NeoPixel-LEDs
-Code to control Adafruit WS2812 LEDs with an IR remote
-You will need to replace all of the '0x' codes with whatever codes your person remote reads but from there feel free to add or upgrade
+Code to control Adafruit WS2812 (neopixel) LEDs with an Infared (IR) remote. All of the different functions are avaliable through the use of IR combinations.
