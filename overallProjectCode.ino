@@ -138,39 +138,39 @@ void loop() {
     // If the command is x and the first value was 2
     else if (command == 0xC && firstValue == 2){ // One
       firstValue = 0;
-      movingColours(200, 255, 0, 50, 0 ,0); // Requires more inputs of a different type
+      waveringColoursFunction(200, 255, 0, 50, 0 ,0); // Requires more inputs of a different type
     }
     else if (command == 0x18 && firstValue == 2){ // Two
       firstValue = 0;
-      movingColours(200, 255, 73, 128, 0, 0);// Orange
+      waveringColoursFunction(200, 255, 73, 128, 0, 0);// Orange
     }
     else if (command == 0x5E && firstValue == 2){ // Three
       firstValue = 0;
-      movingColours(200, 255, 193, 255, 0, 0);// Yellow
+      waveringColoursFunction(200, 255, 193, 255, 0, 0);// Yellow
     }
     else if (command == 0x8 && firstValue == 2){ // Four
       firstValue = 0;
-      movingColours(0, 100, 220, 255, 0, 150);// Green
+      waveringColoursFunction(0, 100, 220, 255, 0, 150);// Green
     }
     else if (command == 0x1C && firstValue == 2){ // Five
       firstValue = 0;
-      movingColours(0, 10, 128, 255, 0, 128);// Turquoise
+      waveringColoursFunction(0, 10, 128, 255, 0, 128);// Turquoise
     }
     else if (command == 0x5A && firstValue == 2){ // Six
       firstValue = 0;
-      movingColours(0, 10, 180, 255, 200, 255);// Cyan
+      waveringColoursFunction(0, 10, 180, 255, 200, 255);// Cyan
     }
     else if (command == 0x42 && firstValue == 2){ // Seven
       firstValue = 0;
-      movingColours(0, 70, 0, 70, 180, 255);// Blue
+      waveringColoursFunction(0, 70, 0, 70, 180, 255);// Blue
     }
     else if (command == 0x52 && firstValue == 2){ // Eight
       firstValue = 0;
-      movingColours(100, 200, 0, 60, 180, 255);// Purple
+      waveringColoursFunction(100, 200, 0, 60, 180, 255);// Purple
     }
     else if (command == 0x4A && firstValue == 2){ // Nine
       firstValue = 0;
-      movingColours(180, 255, 0, 40, 100, 255);// Pink
+      waveringColoursFunction(180, 255, 0, 40, 100, 255);// Pink
     }
 
     // Special values
@@ -178,19 +178,23 @@ void loop() {
     // If the command is x and the first value was 9
     else if (command == 0xC && firstValue == 9){ // One
       firstValue = 0;
-      starLights(); // Requires no inputs
+      starsFunction(); // Requires no inputs
     }
     else if (command == 0x18 && firstValue == 9){ // Two
       firstValue = 0;
-      raveLight();
+      randomFlashingFunction();
     }
     else if (command == 0x5E && firstValue == 9){ // Three
       firstValue = 0;
-      rainbowRave();
+      rainbowSteppedFunction();
     }
     else if (command == 0x8 && firstValue == 9){ // Four
       firstValue = 0;
-      fairyLights();
+      fairyLightsFunction();
+    }
+    else if (command == 0x1C && firstValue == 9){ // Five
+      firstValue = 0;
+      flowingRainbowFunction();
     }
 
 
@@ -233,7 +237,7 @@ static void setColour(uint32_t colour){ // Takes input of a strip.Color
 
 
 // Function to do the moving colours
-static void movingColours(uint32_t redL, uint32_t redH, uint32_t greenL, uint32_t greenH, uint32_t blueL, uint32_t blueH){ // Takes multiple number inputs
+static void waveringColoursFunction(uint32_t redL, uint32_t redH, uint32_t greenL, uint32_t greenH, uint32_t blueL, uint32_t blueH){ // Takes multiple number inputs
   delay(100); // Delay 100ms 
   IrReceiver.resume(); // Resume searching for inputs
   while (true) { // Loop this portion
@@ -259,16 +263,8 @@ static void movingColours(uint32_t redL, uint32_t redH, uint32_t greenL, uint32_
   }
 }
 
-static void strobe(){
-  
-}
-
-static void special(){
-  
-}
-
 // Function for lights that act like stars
-static void starLights(){
+static void starsFunction(){
   delay(100); // Delay 100ms
   IrReceiver.resume(); // Resume searching for inputs
   strip.setBrightness(10); // Set the brightness of the strip to 10
@@ -297,7 +293,7 @@ static void starLights(){
 
 
 // Function to act as a rave light
-static void raveLight(){
+static void randomFlashingFunction(){
   delay(100);
   IrReceiver.resume();
   while(true){ // Pick a random colour
@@ -317,7 +313,7 @@ static void raveLight(){
 
 // Function to act as a rainbow rave
 // I won't lie I don't really understand this one yet :)
-static void rainbowRave(){
+static void rainbowSteppedFunction(){
   delay(100);
   IrReceiver.resume();
   while (true){
@@ -345,9 +341,20 @@ static void rainbowRave(){
   }
 }
 
+static void flowingRainbowFunction(){
+  for(long firstPixelHue = 0; firstPixelHue < 5*65536; firstPixelHue += 100) { // change time
+    for(int i=0; i<strip.numPixels()+2000; i++) { // velocity
+      int pixelHue = firstPixelHue + (i * 65536L / (strip.numPixels()*20)); // length
+      strip.setPixelColor(i, strip.gamma32(strip.ColorHSV(pixelHue)));
+    }
+    strip.show(); // Update strip with new contents
+    delay(10);  // Pause for a moment
+  }
+}
+
 
 // Function to make fairy lights
-static void fairyLights(){
+static void fairyLightsFunction(){
   delay(100);
   while(true){
     // Loop through pixel by pixel (Edit them 1 by 1)
@@ -367,7 +374,4 @@ static void fairyLights(){
       strip.show();
     }
   }
-}
-
-static void yellowStars(){
 }
