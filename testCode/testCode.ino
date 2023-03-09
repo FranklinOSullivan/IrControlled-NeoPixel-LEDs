@@ -9,6 +9,9 @@
 // Recieve pin for the infared sensor
 int RECV_PIN = 11;
 
+int firstIRValue = 0;
+int secondIRValue = 0;
+
 // Set up the system
 void setup() {
   Serial.begin(9600); // Begin the serial monitor
@@ -17,7 +20,13 @@ void setup() {
 }
 
 void loop() {
-  // Franklins number values
+  
+}
+
+//Function to do nothing while waiting for an IR command
+void decodeIRCommand(){
+  noInterrupts();
+    // Franklins number values
   // 1: 0xC
   // 2: 0x18
   // 3: 0x5E
@@ -27,17 +36,26 @@ void loop() {
   // 7: 0x42
   // 8: 0x52
   // 9: 0x4A
-  // If there is input to the sensor
   if(IrReceiver.decode()){
-
-    // Print the code to the output
     Serial.println(IrReceiver.decodedIRData.command, HEX);
-    IrReceiver.resume(); // Resume searching for values
-  } 
+    if (secondIRValue == 0){
+      Serial.println("Second value = 0");
+      secondIRValue = firstIRValue;
+      firstIRValue = IrReceiver.decodedIRData.command;
+    }
+    // If the ISR has been called enough times that both numbers are assigned values
+    else {
+      firstIRValue = 0;
+      secondIRValue = 0;
+    }
+    IrReceiver.resume();
+  }
+  
+  
 }
 
 
+// Interrupt vector for all IR inputs
 void IrRecInterrupt(){
-  Serial.println("Interrupt triggered");
-  delay(1000);
+  decodeIRCommand();
 }
