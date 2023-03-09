@@ -13,6 +13,7 @@ int RECV_PIN = 11;
 void setup() {
   Serial.begin(9600); // Begin the serial monitor
   IrReceiver.begin(RECV_PIN, ENABLE_LED_FEEDBACK); // Start the IR reciever
+  attachInterrupt(0, IrRecInterrupt, RISING);
 }
 
 void loop() {
@@ -32,7 +33,11 @@ void loop() {
     // Print the code to the output
     Serial.println(IrReceiver.decodedIRData.command, HEX);
     IrReceiver.resume(); // Resume searching for values
-    delay(100); // Delay for 100ms
   } 
 }
 
+
+void IrRecInterrupt(){
+  Serial.println("Interrupt triggered");
+  delay(1000);
+}
